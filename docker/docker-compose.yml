@@ -1,0 +1,11 @@
+version: "3"
+
+services:
+  godel:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    ports:
+      - "8080:5000"
+    volumes:
+      - ./data:/app/data
