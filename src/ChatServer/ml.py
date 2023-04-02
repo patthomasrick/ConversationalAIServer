@@ -1,8 +1,8 @@
-from ChatServer.Backend.facebook_blenderbot_3b import FacebookBlenderbot3B
+from ChatServer.Backend.facebook_blenderbot_distill import FacebookBlenderbotDistill
 
 
 def _get_bot():
-    bot = FacebookBlenderbot3B()
+    bot = FacebookBlenderbotDistill()
     bot.load()
     return bot
 

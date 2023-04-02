@@ -5,14 +5,9 @@ WORKDIR /app
 COPY requirements.txt /app/
 RUN pip install -r requirements.txt
 
-# Setup just grabs the models.
-COPY src/setup.py /app/
-ENV MODEL="facebook/blenderbot-400M-distill"
-RUN python setup.py
-
 # Copy main.
-COPY src/*.py /app/
+COPY src/ChatServer /app/ChatServer
 
 RUN mkdir -p /app/data
 
-CMD ["flask", "--app=ChatsServer.server", "run", "--host=0.0.0.0"]
+CMD ["flask", "--app=ChatServer.server", "run", "--host=0.0.0.0"]
