@@ -1,13 +1,12 @@
 import json
 
-from flask import Flask, request
+from flask import Flask, current_app, request
 
-from ml import chat, initialize, clear_history, get_history
+from ChatServer.Backend.facebook_blenderbot_distill import FacebookBlenderbotDistill
+from ChatServer.ml import _get_bot
 
 app = Flask(__name__)
-
-# Load models into memory.
-initialize(app)
+app.bot = _get_bot()
 
 
 @app.route("/", methods=["POST", "DELETE"])
@@ -16,8 +15,10 @@ def index():
 
     # If DELETE request, clear the chat history
     if request.method == "DELETE":
-        clear_history()
-        return json.dumps({"response": "Chat history cleared"}), 200, headers
+        if current_app.bot.clear_context():
+            return json.dumps({"response": "Chat history cleared"}), 200, headers
+        else:
+            return json.dumps({"response": "Chat history not cleared"}), 500, headers
 
     # Require a POST request
     if request.method != "POST":
@@ -32,8 +33,7 @@ def index():
         json.dumps(
             {
                 "input": user_input,
-                "response": chat(user_input),
-                "history": get_history(),
+                "response": current_app.bot.tell(user_input),
             }
         ),
         200,

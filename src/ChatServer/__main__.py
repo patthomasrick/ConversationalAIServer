@@ -1,12 +1,12 @@
-from ml import chat, initialize
+from ChatServer.ml import _get_bot
 
 
 if __name__ == "__main__":
-    initialize(None, cli=True)
+    bot = _get_bot()
 
     while True:
         user_input = input(">>> ")
 
         if not user_input:
             break
-        print(chat(user_input, cli=True))
+        print(bot.tell(user_input))
