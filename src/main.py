@@ -2,7 +2,7 @@ import json
 
 from flask import Flask, request
 
-from ml import chat, initialize
+from ml import chat, initialize, clear_history, get_history
 
 app = Flask(__name__)
 
@@ -10,9 +10,14 @@ app = Flask(__name__)
 initialize(app)
 
 
-@app.route("/", methods=["GET", "POST"])
+@app.route("/", methods=["POST", "DELETE"])
 def index():
     headers = {"Content-Type": "application/json"}
+
+    # If DELETE request, clear the chat history
+    if request.method == "DELETE":
+        clear_history()
+        return json.dumps({"response": "Chat history cleared"}), 200, headers
 
     # Require a POST request
     if request.method != "POST":
@@ -23,4 +28,14 @@ def index():
     if user_input is None:
         return json.dumps({"error": "no input"}), 400, headers
 
-    return json.dumps({"input": user_input, "response": chat(user_input)}), 200, headers
+    return (
+        json.dumps(
+            {
+                "input": user_input,
+                "response": chat(user_input),
+                "history": get_history(),
+            }
+        ),
+        200,
+        headers,
+    )

@@ -7,6 +7,7 @@ RUN pip install -r requirements.txt
 
 # Setup just grabs the models.
 COPY src/setup.py /app/
+ENV MODEL="microsoft/DialoGPT-large"
 RUN python setup.py
 
 # Copy main.
